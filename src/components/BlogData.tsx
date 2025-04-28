@@ -37,10 +37,12 @@ const blog = () => {
       toast.error("Error fetching like status", { duration: 3000 });
       setLikeStatusLoading(false);
       setLikeStatusFailed(true);
+      setLiked(false);
     }
   };
 
   useEffect(() => {
+    if(!isAuthenticated) return;
     fetchLikeStatus();
   }, [id]);
 
