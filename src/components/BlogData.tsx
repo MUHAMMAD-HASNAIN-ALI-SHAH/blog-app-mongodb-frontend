@@ -44,7 +44,7 @@ const blog = () => {
   useEffect(() => {
     if(!isAuthenticated) return;
     fetchLikeStatus();
-  }, [id]);
+  }, [id,isAuthenticated]);
 
   const LikeBlog = async (blogId: number | null) => {
     if (!blogId) return;
