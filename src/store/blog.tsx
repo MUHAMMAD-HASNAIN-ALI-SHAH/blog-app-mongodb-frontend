@@ -7,7 +7,7 @@ interface blog {
   title: string;
   description: string;
   category: string;
-  views: number;
+  views?: number;
   image: string;
 }
 
