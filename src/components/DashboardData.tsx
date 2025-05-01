@@ -39,12 +39,7 @@ const DashboardData = () => {
         {/* Add a Blog */}
         <div className="  p-6 rounded-xl shadow-2xl text-center">
           <h2 className="text-xl font-semibold mb-2">Add a Blog</h2>
-          <Modal
-            opened={opened}
-            onClose={close}
-            title="Authentication"
-            centered
-          >
+          <Modal opened={opened} onClose={close} title="Add Blog" centered>
             <AddBlog onClose={close} />
           </Modal>
           <Button onClick={open} className="btn btn-primary">

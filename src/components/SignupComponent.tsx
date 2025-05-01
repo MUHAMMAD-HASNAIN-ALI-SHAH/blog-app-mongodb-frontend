@@ -1,6 +1,8 @@
 import { useForm } from "@mantine/form";
-import { TextInput } from "@mantine/core";
+import { PasswordInput, TextInput } from "@mantine/core";
 import useAuthStore from "../store/auth";
+import Code from "./Code";
+import { useEffect } from "react";
 
 const SignupComponent = ({
   close,
@@ -9,30 +11,47 @@ const SignupComponent = ({
   close: () => void;
   setAuthModal: (state: string) => void;
 }) => {
-  const { signup, authLoader } = useAuthStore();
+  const {
+    signup,
+    authLoader,
+    registerCodeValues,
+    clearRegisterCodeValueState,
+  } = useAuthStore();
 
   const form = useForm({
-    initialValues: { username: "", email: "", password: "" },
+    initialValues: {
+      username: "",
+      email: "",
+      password: "",
+      confirmPassword: "",
+    },
     validate: {
       username: (value) =>
-        value.length < 3 || value.length > 16
-          ? "Username must be between 3 and 16 characters"
+        value.length < 3 || value.length >50
+          ? "Username must be between 3 and 50 characters"
           : null,
       email: (value) => (/^\S+@\S+\.\S+$/.test(value) ? null : "Invalid email"),
       password: (value) =>
         value.length < 6 ? "Password must be at least 6 characters" : null,
+      confirmPassword: (value, values) =>
+        value !== values.password
+          ? "Passwords do not match"
+          : null,
     },
   });
 
   const handleSubmit = async () => {
     const values = form.values;
-    const getResult = await signup(values);
-    if (getResult === 1) {
-      close();
-    }
+    await signup(values);
   };
 
-  return (
+  useEffect(() => {
+    clearRegisterCodeValueState();
+  }, []);
+
+  return registerCodeValues.codeSent ? (
+    <Code onClose={close} />
+  ) : (
     <form className="w-full" onSubmit={form.onSubmit(handleSubmit)}>
       <h1 className="text-2xl font-bold pb-2">Signup to create an account</h1>
       <p className="">Please enter your details</p>
@@ -53,7 +72,7 @@ const SignupComponent = ({
         {...form.getInputProps("email")}
       />
 
-      <TextInput
+      <PasswordInput
         mt="sm"
         label="Password"
         placeholder="Password"
@@ -61,6 +80,16 @@ const SignupComponent = ({
         key={form.key("password")}
         {...form.getInputProps("password")}
       />
+
+      <PasswordInput
+        mt="sm"
+        label="Confirm Password"
+        placeholder="Confirm Password"
+        type="password"
+        key={form.key("confirmPassword")}
+        {...form.getInputProps("confirmPassword")}
+      />
+
       <div className="flex justify-between items-center mt-3">
         <p className="pt-3">
           Already have an account{" "}
@@ -72,7 +101,11 @@ const SignupComponent = ({
           </button>{" "}
         </p>
 
-        <button disabled={!!authLoader} className="btn btn-primary" type="submit">
+        <button
+          disabled={!!authLoader}
+          className="btn btn-primary"
+          type="submit"
+        >
           Signup
         </button>
       </div>

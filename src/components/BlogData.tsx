@@ -1,6 +1,6 @@
 import { useParams } from "react-router-dom";
 import Comments from "./Comments";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import axiosInstance from "../utils/axios";
 import useBlogStore from "../store/blog";
 import useHomeBlogStore from "../store/home";
@@ -15,17 +15,29 @@ const blog = () => {
   const [loading, setLoading] = useState<boolean>(false);
   const [likeStatusLoading, setLikeStatusLoading] = useState<boolean>(false);
   const [likeSatusFailed, setLikeStatusFailed] = useState<boolean>(false);
-  const { getBlogData, blog } = useHomeBlogStore();
+  const { getBlogData, blog, viewBlog } = useHomeBlogStore();
   const { isAuthenticated } = useAuthStore();
 
   if (blogId === null || isNaN(blogId)) {
     return <p>Error: Invalid blog ID</p>;
   }
 
+  const hasViewedRef = useRef(false);
+
   useEffect(() => {
-    useHomeBlogStore.getState().clearStateBlogData();
-    getBlogData(blogId);
-  }, [id]);
+    if (!blogId || hasViewedRef.current) return;
+  
+    hasViewedRef.current = true; // prevent future executions
+  
+    const fetchData = async () => {
+      useHomeBlogStore.getState().clearStateBlogData();
+      await viewBlog(blogId);
+      await getBlogData(blogId);
+    };
+  
+    fetchData();
+  }, [blogId]);
+  
 
   const fetchLikeStatus = async () => {
     try {
@@ -42,9 +54,9 @@ const blog = () => {
   };
 
   useEffect(() => {
-    if(!isAuthenticated) return;
+    if (!isAuthenticated) return;
     fetchLikeStatus();
-  }, [id,isAuthenticated]);
+  }, [id, isAuthenticated]);
 
   const LikeBlog = async (blogId: number | null) => {
     if (!blogId) return;

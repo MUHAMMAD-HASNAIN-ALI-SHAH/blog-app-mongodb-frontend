@@ -5,6 +5,7 @@ import {
   TextInput,
   Textarea,
   Image,
+  Select,
 } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { useState } from "react";
@@ -12,15 +13,16 @@ import useBlogStore from "../store/blog";
 
 const AddBlog = ({ onClose }: { onClose: any }) => {
   const [preview, setPreview] = useState<string | null>(null);
-  const { addBlog, submitionState,getBlogs } = useBlogStore();
+  const { addBlog, submitionState, getBlogs } = useBlogStore();
 
   const form = useForm({
     mode: "uncontrolled",
     initialValues: {
       title: "",
       description: "",
-      image: null as File | null, // File Input
-      base64Image: "", // Stores Base64 string
+      category: "",
+      image: null as File | null,
+      base64Image: "",
     },
 
     validate: {
@@ -30,6 +32,8 @@ const AddBlog = ({ onClose }: { onClose: any }) => {
           ? null
           : "Description must be at least 10 characters",
       base64Image: (value) => (value ? null : "Image is required"),
+      category: (value) =>
+        value.length > 0 ? null : "Category is required",
     },
   });
 
@@ -54,24 +58,20 @@ const AddBlog = ({ onClose }: { onClose: any }) => {
   const handleSubmit = async (values: {
     title: string;
     description: string;
+    category: string;
     base64Image: string;
   }) => {
     const data = {
       id: null,
       title: values.title,
       description: values.description,
+      category: values.category,
       image: values.base64Image,
     };
     await addBlog(data);
-    await getBlogs();
     onClose();
+    await getBlogs();
   };
-
-  // Check if form is valid
-  // const isFormValid =
-  //   form.values.title.trim().length > 0 &&
-  //   form.values.description.trim().length > 10 &&
-  //   form.values.base64Image !== "";
 
   return (
     <form onSubmit={form.onSubmit(handleSubmit)}>
@@ -90,6 +90,24 @@ const AddBlog = ({ onClose }: { onClose: any }) => {
         autosize
         maxRows={10}
         {...form.getInputProps("description")}
+      />
+
+      <Select
+        label="Select blog category"
+        placeholder="Pick value"
+        data={[
+          "technology",
+          "travel",
+          "food",
+          "lifestyle",
+          "health",
+          "education",
+          "finance",
+          "sports",
+          "fashion",
+          "entertainment",
+        ]}
+        {...form.getInputProps("category")}
       />
 
       <FileInput

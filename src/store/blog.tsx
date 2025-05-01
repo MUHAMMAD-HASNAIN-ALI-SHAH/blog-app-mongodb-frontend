@@ -6,6 +6,8 @@ interface blog {
   id: number | null;
   title: string;
   description: string;
+  category: string;
+  views: number;
   image: string;
 }
 
@@ -58,7 +60,6 @@ const useBlogStore = create<BlogStore>((set) => ({
       set({ dashboardBlogsLoadingState: false });
     } catch (error: any) {
       console.log(error.response.data.status);
-      toast.error("Failed to fetch blogs", { duration: 3000 });
       set({ dashboardBlogsLoadingState: false });
     }
   },

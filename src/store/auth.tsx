@@ -12,6 +12,10 @@ interface User {
 interface AuthState {
   user: User | null;
   isAuthenticated: boolean;
+  registerCodeValues: {
+    codeSent: boolean;
+    email: string;
+  };
   isAuthenticatedLoading: boolean;
   authLoader: boolean;
   signup: (formData: {
@@ -20,13 +24,19 @@ interface AuthState {
     password: string;
   }) => Promise<number>;
   signin: (formData: { email: string; password: string }) => Promise<number>;
+  register: (formData: { email: string; code: number }) => Promise<number>;
   verify: () => void;
   logout: () => void;
+  clearRegisterCodeValueState: () => void;
 }
 
 const useAuthStore = create<AuthState>((set) => ({
   user: null,
   isAuthenticated: false,
+  registerCodeValues: {
+    codeSent: false,
+    email: "",
+  },
   isAuthenticatedLoading: false,
   authLoader: false,
 
@@ -34,9 +44,14 @@ const useAuthStore = create<AuthState>((set) => ({
     try {
       useBlogStore.getState().clearState();
       set({ authLoader: true });
-      const response = await axiosInstance.post("/v1/auth/register", formData);
-      set({ user: response.data.user, isAuthenticated: true });
+      const response = await axiosInstance.post("/v1/auth/get-code", formData);
       toast.success(response.data.msg, { duration: 3000 });
+      set({
+        registerCodeValues: {
+          codeSent: true,
+          email: response.data.user.email,
+        },
+      });
       set({ authLoader: false });
       return 1;
     } catch (error: any) {
@@ -44,6 +59,28 @@ const useAuthStore = create<AuthState>((set) => ({
         duration: 3000,
       });
       set({ authLoader: false });
+      return 0;
+    }
+  },
+
+  register: async (formData) => {
+    try {
+      useBlogStore.getState().clearState();
+      set({ authLoader: true });
+      const response = await axiosInstance.post("/v1/auth/register", formData);
+      toast.success(response.data.msg, { duration: 3000 });
+      set({
+        user: response.data.user,
+        isAuthenticated: true,
+      });
+      set({ authLoader: false });
+      return 1;
+    } catch (error: any) {
+      toast.error(error?.response?.data?.msg || "Signup failed", {
+        duration: 3000,
+      });
+      set({ authLoader: false });
+      console.log(error);
       return 0;
     }
   },
@@ -92,6 +129,8 @@ const useAuthStore = create<AuthState>((set) => ({
       set({ user: null, isAuthenticated: false });
     }
   },
+  clearRegisterCodeValueState: () =>
+    set({ registerCodeValues: { codeSent: false, email: "" } }),
 }));
 
 export default useAuthStore;

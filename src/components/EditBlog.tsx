@@ -5,6 +5,7 @@ import {
   TextInput,
   Textarea,
   Image,
+  Select,
 } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { useEffect, useState } from "react";
@@ -21,6 +22,7 @@ const EditBlog = ({ id, onClose }: { id: number | null; onClose: any }) => {
     initialValues: {
       title: "",
       description: "",
+      category: "",
       image: null as File | null,
       base64Image: "",
     },
@@ -32,6 +34,8 @@ const EditBlog = ({ id, onClose }: { id: number | null; onClose: any }) => {
           ? null
           : "Description must be at least 10 characters",
       base64Image: (value) => (value ? null : "Image is required"),
+      category: (value) =>
+        value.length > 0 ? null : "Category is required",
     },
   });
 
@@ -41,6 +45,7 @@ const EditBlog = ({ id, onClose }: { id: number | null; onClose: any }) => {
         const response = await axiosInstance.get(`/v2/blog/blog/${id}`);
         form.setFieldValue("title", response.data.blogData.title);
         form.setFieldValue("description", response.data.blogData.description);
+        form.setFieldValue("category", response.data.blogData.category); // Add this line
         form.setFieldValue("base64Image", response.data.blogData.image);
         setPreview(response.data.blogData.image);
       } catch (error) {
@@ -72,12 +77,14 @@ const EditBlog = ({ id, onClose }: { id: number | null; onClose: any }) => {
   const handleSubmit = async (values: {
     title: string;
     description: string;
+    category: string;
     base64Image: string;
   }) => {
     const data = {
       id,
       title: values.title,
       description: values.description,
+      category: values.category,
       image: values.base64Image,
     };
     await updateBlog(data);
@@ -87,7 +94,6 @@ const EditBlog = ({ id, onClose }: { id: number | null; onClose: any }) => {
 
   return (
     <form onSubmit={form.onSubmit(handleSubmit)}>
-      {id}
       <TextInput
         withAsterisk
         label="Title"
@@ -103,6 +109,28 @@ const EditBlog = ({ id, onClose }: { id: number | null; onClose: any }) => {
         autosize
         maxRows={10}
         {...form.getInputProps("description")}
+      />
+
+      <p className="mt-5 text-sm"><span className="font-bold">NOTE: </span>Previous selected category <span className="font-bold">"{form.getValues().category}"</span></p>
+      <p className="text-sm mb-2">Select category again if you want to change</p>
+
+      <Select
+        label="Select blog category"
+        placeholder="Pick value"
+        data={[
+          "technology",
+          "travel",
+          "food",
+          "lifestyle",
+          "health",
+          "education",
+          "finance",
+          "sports",
+          "fashion",
+          "entertainment",
+        ]}
+        className="mb-5"
+        {...form.getInputProps("category")}
       />
 
       <FileInput
