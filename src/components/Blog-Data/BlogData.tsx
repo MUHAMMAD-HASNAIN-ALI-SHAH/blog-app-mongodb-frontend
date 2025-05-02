@@ -1,11 +1,12 @@
 import { useParams } from "react-router-dom";
 import Comments from "./Comments";
 import { useEffect, useRef, useState } from "react";
-import axiosInstance from "../utils/axios";
-import useBlogStore from "../store/blog";
-import useHomeBlogStore from "../store/home";
-import useAuthStore from "../store/auth";
+import axiosInstance from "../../utils/axios";
+import useBlogStore from "../../store/blog";
+import useHomeBlogStore from "../../store/home";
+import useAuthStore from "../../store/auth";
 import toast from "react-hot-toast";
+import BlogDataSkeleton from "../skeleton/BlogDataSkeleton";
 
 const blog = () => {
   const { id } = useParams();
@@ -118,9 +119,7 @@ const blog = () => {
             />
           </>
         ) : (
-          <div className="flex justify-center items-center h-[80vh]">
-            <span className="loading loading-spinner loading-xl text-blue-700"></span>
-          </div>
+          <BlogDataSkeleton />
         )}
       </div>
     </div>

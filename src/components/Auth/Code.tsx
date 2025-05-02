@@ -1,6 +1,6 @@
 import { useForm } from "@mantine/form";
 import { TextInput, Box, Text } from "@mantine/core";
-import useAuthStore from "../store/auth";
+import useAuthStore from "../../store/auth";
 
 const Code = ({ onClose }: { onClose: () => void }) => {
   const { register, registerCodeValues, authLoader } = useAuthStore();

@@ -1,12 +1,12 @@
 import { Link } from "react-router-dom";
-import useAuthStore from "../store/auth";
+import useAuthStore from "../../store/auth";
 import { Modal } from "@mantine/core";
 import { useState } from "react";
-import SearchBlogs from "./SearchBlogs";
 import { useMediaQuery } from "@mantine/hooks";
 import { useDisclosure } from "@mantine/hooks";
 import { Drawer } from "@mantine/core";
-import Authentication from "./Authentication";
+import Authentication from "../Auth/Authentication";
+import SearchBlogs from "./SearchBlogs";
 
 const Navbar = () => {
   const { isAuthenticated, logout, isAuthenticatedLoading } = useAuthStore();
@@ -58,9 +58,9 @@ const Navbar = () => {
               <div>
                 {isAuthenticatedLoading ? (
                   <>
-                    <div className="flex justify-center items-center h-full">
-                      <button className="btn btn-primary"><span className="loading loading-dots loading-md"></span></button>
-                      
+                    <div className="flex justify-center items-center gap-3 h-full">
+                      <button className="skeleton w-28 bg-gray-300 btn border-none"></button>
+                      <button className="skeleton w-24 bg-gray-300 btn border-none"></button>
                     </div>
                   </>
                 ) : (

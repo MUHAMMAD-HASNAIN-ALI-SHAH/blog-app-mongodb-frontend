@@ -1,7 +1,7 @@
 import { Button, Group, TextInput } from "@mantine/core";
 import { useForm } from "@mantine/form";
-import useBlogStore from "../store/blog";
-import useHomeBlogStore from "../store/home";
+import useBlogStore from "../../store/blog";
+import useHomeBlogStore from "../../store/home";
 
 interface CommentsProps {
   id: number;

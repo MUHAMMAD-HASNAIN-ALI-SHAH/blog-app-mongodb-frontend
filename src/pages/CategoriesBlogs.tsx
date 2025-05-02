@@ -1,10 +1,12 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import useHomeBlogStore from "../store/home";
+import HomePageCardsSkeleton from "../components/skeleton/HomePageCardsSkeleton";
 
 const CategoriesBlogs = () => {
   const { category } = useParams();
   const { categoryBlogs } = useHomeBlogStore();
+  const [loading, setLoading] = useState(true);
 
   const [blogs, setBlogs] = useState<
     {
@@ -21,10 +23,13 @@ const CategoriesBlogs = () => {
     if (!category) return;
     const fetchCategoryBlogs = async () => {
       try {
+        setLoading(true);
         const fetchedBlogs = await categoryBlogs(category);
         setBlogs(fetchedBlogs);
+        setLoading(false);
       } catch (error) {
         console.error("Error fetching category blogs:", error);
+        setLoading(false);
       }
     };
     fetchCategoryBlogs();
@@ -37,7 +42,9 @@ const CategoriesBlogs = () => {
           {category} Blogs
         </h1>
 
-        {blogs.length > 0 ? (
+        {loading ? (
+          <HomePageCardsSkeleton />
+        ) : blogs.length > 0 ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
             {blogs.map((blog) => (
               <div

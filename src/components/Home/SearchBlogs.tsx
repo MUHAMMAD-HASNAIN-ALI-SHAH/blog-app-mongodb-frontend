@@ -1,6 +1,6 @@
 import { Input } from "@mantine/core";
 import { useState } from "react";
-import axiosInstance from "../utils/axios";
+import axiosInstance from "../../utils/axios";
 import { useNavigate } from "react-router-dom";
 
 const SearchBlogs = ({ onClose }: { onClose: () => void }) => {
@@ -8,7 +8,9 @@ const SearchBlogs = ({ onClose }: { onClose: () => void }) => {
   const [blogs, setBlogs] = useState<
     { id: number; title: string; description: string; image: string }[]
   >([]);
-  const [debounceTimer, setDebounceTimer] = useState<NodeJS.Timeout | null>(null);
+  const [debounceTimer, setDebounceTimer] = useState<NodeJS.Timeout | null>(
+    null
+  );
 
   const navigate = useNavigate();
 
@@ -37,7 +39,7 @@ const SearchBlogs = ({ onClose }: { onClose: () => void }) => {
     try {
       const formData = {
         search: searchValue,
-      }
+      };
       const res = await axiosInstance.post("/v2/blog/search", formData);
       setBlogs(res.data.blogs);
     } catch (err) {
@@ -58,7 +60,7 @@ const SearchBlogs = ({ onClose }: { onClose: () => void }) => {
         onChange={handleChange}
         placeholder="Search blogs"
       />
-      
+
       {blogs.length > 0 ? (
         <ul className="mt-4 flex flex-col gap-2">
           {blogs.map((blog) => (

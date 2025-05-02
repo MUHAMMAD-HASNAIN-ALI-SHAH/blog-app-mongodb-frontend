@@ -1,7 +1,7 @@
 import { useDisclosure } from "@mantine/hooks";
 import { Modal, Button } from "@mantine/core";
 import AddComment from "./AddComment";
-import useAuthStore from "../store/auth";
+import useAuthStore from "../../store/auth";
 
 interface CommentsProps {
   id: number;

@@ -1,20 +1,14 @@
 import { useDisclosure } from "@mantine/hooks";
 import { Modal, Button } from "@mantine/core";
 import AddBlog from "./AddBlog";
-import useBlogStore from "../store/blog";
-import { useEffect } from "react";
+import useBlogStore from "../../store/blog";
 
 const DashboardData = () => {
   const [opened, { open, close }] = useDisclosure(false);
 
   const { blogs } = useBlogStore();
 
-  const { getLikes, getComments, likes, comments } = useBlogStore();
-
-  useEffect(() => {
-    getLikes();
-    getComments();
-  }, [getLikes, getComments]);
+  const { likes, comments } = useBlogStore();
 
   return (
     <div className="p-4">

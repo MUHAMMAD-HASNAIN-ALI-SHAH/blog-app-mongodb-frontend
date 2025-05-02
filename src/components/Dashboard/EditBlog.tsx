@@ -8,12 +8,14 @@ import {
   Select,
 } from "@mantine/core";
 import { useForm } from "@mantine/form";
-import { useState } from "react";
-import useBlogStore from "../store/blog";
+import { useEffect, useState } from "react";
+import toast from "react-hot-toast";
+import useBlogStore from "../../store/blog";
+import axiosInstance from "../../utils/axios";
 
-const AddBlog = ({ onClose }: { onClose: any }) => {
+const EditBlog = ({ id, onClose }: { id: number | null; onClose: any }) => {
   const [preview, setPreview] = useState<string | null>(null);
-  const { addBlog, submitionState, getBlogs } = useBlogStore();
+  const { updateBlog, submitionState, getBlogs } = useBlogStore();
 
   const form = useForm({
     mode: "uncontrolled",
@@ -36,6 +38,23 @@ const AddBlog = ({ onClose }: { onClose: any }) => {
         value.length > 0 ? null : "Category is required",
     },
   });
+
+  useEffect(() => {
+    const getBlogs = async () => {
+      try {
+        const response = await axiosInstance.get(`/v2/blog/blog/${id}`);
+        form.setFieldValue("title", response.data.blogData.title);
+        form.setFieldValue("description", response.data.blogData.description);
+        form.setFieldValue("category", response.data.blogData.category); // Add this line
+        form.setFieldValue("base64Image", response.data.blogData.image);
+        setPreview(response.data.blogData.image);
+      } catch (error) {
+        toast.error("Failed to fetch blog", { duration: 3000 });
+        console.error(error);
+      }
+    };
+    getBlogs();
+  }, [id]);
 
   // Convert image to Base64
   const handleImageChange = (file: File | null) => {
@@ -62,15 +81,15 @@ const AddBlog = ({ onClose }: { onClose: any }) => {
     base64Image: string;
   }) => {
     const data = {
-      id: null,
+      id,
       title: values.title,
       description: values.description,
       category: values.category,
       image: values.base64Image,
     };
-    await addBlog(data);
-    onClose();
+    await updateBlog(data);
     await getBlogs();
+    onClose();
   };
 
   return (
@@ -92,6 +111,9 @@ const AddBlog = ({ onClose }: { onClose: any }) => {
         {...form.getInputProps("description")}
       />
 
+      <p className="mt-5 text-sm"><span className="font-bold">NOTE: </span>Previous selected category <span className="font-bold">"{form.getValues().category}"</span></p>
+      <p className="text-sm mb-2">Select category again if you want to change</p>
+
       <Select
         label="Select blog category"
         placeholder="Pick value"
@@ -107,6 +129,7 @@ const AddBlog = ({ onClose }: { onClose: any }) => {
           "fashion",
           "entertainment",
         ]}
+        className="mb-5"
         {...form.getInputProps("category")}
       />
 
@@ -137,11 +160,11 @@ const AddBlog = ({ onClose }: { onClose: any }) => {
 
       <Group justify="flex-end" mt="md">
         <Button type="submit" disabled={!!submitionState}>
-          Submit
+          Update
         </Button>
       </Group>
     </form>
   );
 };
 
-export default AddBlog;
+export default EditBlog;

@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import BlogData from "../components/BlogData"
+import BlogData from "../components/Blog-Data/BlogData"
 
 const Blog = () => {
 

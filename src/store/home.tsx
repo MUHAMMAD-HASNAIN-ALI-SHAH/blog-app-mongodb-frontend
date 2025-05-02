@@ -35,6 +35,7 @@ interface BlogStore {
   popularBlogs: blog[];
   blog: blogData | null;
   loadingStateBlogs: boolean;
+  getPopularBlogLoader: boolean;
   getBlogs: () => void;
   getBlogData: (id: number | null) => void;
   clearStateBlogData: () => void;
@@ -47,6 +48,7 @@ const useHomeBlogStore = create<BlogStore>((set) => ({
   blogs: [],
   popularBlogs: [],
   blog: null,
+  getPopularBlogLoader: false,
   loadingStateBlogs: false,
   getBlogs: async () => {
     try {
@@ -92,10 +94,13 @@ const useHomeBlogStore = create<BlogStore>((set) => ({
   },
   getPopularBlogs: async () => {
     try {
+      set({ getPopularBlogLoader: true });
       const response = await axiosInstance.get(`/v2/blog/popular-blogs`);
       set({ popularBlogs: response.data.blogs });
+      set({ getPopularBlogLoader: false });
     } catch (error) {
       console.error(error);
+      set({ getPopularBlogLoader: false });
       return null;
     }
   },

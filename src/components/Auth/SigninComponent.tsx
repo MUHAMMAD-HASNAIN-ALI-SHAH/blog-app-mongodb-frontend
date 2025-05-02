@@ -1,6 +1,6 @@
 import { useForm } from "@mantine/form";
 import { TextInput, PasswordInput } from "@mantine/core";
-import useAuthStore from "../store/auth";
+import useAuthStore from "../../store/auth";
 
 const SigninComponent = ({
   close,

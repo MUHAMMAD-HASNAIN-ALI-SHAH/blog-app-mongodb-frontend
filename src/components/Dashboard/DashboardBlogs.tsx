@@ -1,6 +1,6 @@
 import { useDisclosure } from "@mantine/hooks";
 import { Modal, Button } from "@mantine/core";
-import useBlogStore from "../store/blog";
+import useBlogStore from "../../store/blog";
 import { useState } from "react";
 import EditBlog from "./EditBlog";
 
@@ -10,7 +10,6 @@ const DashboardBlogs = () => {
     deleteBlog,
     getBlogs,
     deleteState,
-    dashboardBlogsLoadingState,
   } = useBlogStore();
   const [opened, { open, close }] = useDisclosure(false);
   const [selectedBlogId, setSelectedBlogId] = useState<number | null>(null);
@@ -36,13 +35,7 @@ const DashboardBlogs = () => {
         )}
       </Modal>
 
-      {dashboardBlogsLoadingState ? (
-        <div className="flex flex-col items-center justify-center w-full p-4">
-          <p className="text-blue-700 w-full text-center">
-            <span className="loading loading-spinner loading-xl"></span>
-          </p>
-        </div>
-      ) : blogs && blogs.length > 0 ? (
+      {blogs && blogs.length > 0 ? (
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
           {blogs.map((blog) => (
             <div
