@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import BlogCard from "./blogCard";
+import BlogCard from "./BlogCard";
 
 const CategoryBlogs = ({
   category,
