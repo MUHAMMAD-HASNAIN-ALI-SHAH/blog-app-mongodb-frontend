@@ -11,6 +11,8 @@ const SearchBlogs = ({ onClose }: { onClose: () => void }) => {
   const [debounceTimer, setDebounceTimer] = useState<NodeJS.Timeout | null>(
     null
   );
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(false);
 
   const navigate = useNavigate();
 
@@ -18,12 +20,10 @@ const SearchBlogs = ({ onClose }: { onClose: () => void }) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
 
-    // Clear the previous timer
     if (debounceTimer) {
       clearTimeout(debounceTimer);
     }
 
-    // Set a new timer
     const newTimer = setTimeout(() => {
       if (value.trim() !== "") {
         searchBlogs(value);
@@ -37,13 +37,16 @@ const SearchBlogs = ({ onClose }: { onClose: () => void }) => {
 
   const searchBlogs = async (searchValue: string) => {
     try {
-      const formData = {
-        search: searchValue,
-      };
+      setBlogs([]);
+      setLoading(true);
+      const formData = { search: searchValue };
       const res = await axiosInstance.post("/v2/blog/search", formData);
       setBlogs(res.data.blogs);
+      setLoading(false);
     } catch (err) {
       console.error(err);
+      setLoading(false);
+      setError(true);
     }
   };
 
@@ -61,7 +64,22 @@ const SearchBlogs = ({ onClose }: { onClose: () => void }) => {
         placeholder="Search blogs"
       />
 
-      {blogs.length > 0 ? (
+      {loading ? (
+        <>
+          {[1, 2].map((_, index) => (
+            <li key={index} className="flex gap-2 p-2 rounded-lg">
+              <div className="w-1/3">
+                <div className="skeleton h-32 w-full bg-gray-300"></div>
+              </div>
+              <div className="flex flex-col w-2/3 justify-between">
+                <div className="skeleton h-8 w-28 bg-gray-300"></div>
+                <div className="skeleton h-8 w-full bg-gray-300"></div>
+                <div className="skeleton h-8 w-full bg-gray-300"></div>
+              </div>
+            </li>
+          ))}
+        </>
+      ) : blogs.length > 0 ? (
         <ul className="mt-4 flex flex-col gap-2">
           {blogs.map((blog) => (
             <li
@@ -70,11 +88,15 @@ const SearchBlogs = ({ onClose }: { onClose: () => void }) => {
               className="flex gap-2 cursor-pointer p-2 hover:shadow-2xl rounded-lg transition-transform duration-200 transform hover:scale-105"
             >
               <div className="w-1/3">
-                <img className="" src={blog.image} alt="" />
+                <img
+                  className="w-full h-auto object-cover rounded"
+                  src={blog.image}
+                  alt={blog.title}
+                />
               </div>
               <div className="flex flex-col w-2/3">
                 <h2 className="font-semibold">{blog.title}</h2>
-                <p className="text-justify">
+                <p className="text-justify text-sm text-gray-600">
                   {blog.description.length > 130
                     ? blog.description.substring(0, 130) + "..."
                     : blog.description}
@@ -83,9 +105,9 @@ const SearchBlogs = ({ onClose }: { onClose: () => void }) => {
             </li>
           ))}
         </ul>
-      ) : (
-        <p className="mt-4">No blogs found</p>
-      )}
+      ) : error ? (
+        <p className="mt-4 text-gray-500">No blogs found</p>
+      ) : null}
     </div>
   );
 };

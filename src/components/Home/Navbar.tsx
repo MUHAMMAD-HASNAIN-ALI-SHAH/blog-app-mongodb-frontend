@@ -59,8 +59,8 @@ const Navbar = () => {
                 {isAuthenticatedLoading ? (
                   <>
                     <div className="flex justify-center items-center gap-3 h-full">
-                      <button className="skeleton w-28 bg-gray-300 btn border-none"></button>
-                      <button className="skeleton w-24 bg-gray-300 btn border-none"></button>
+                    <button className="skeleton w-28 bg-gray-300 btn border-none"></button>
+                    <button className="skeleton w-24 bg-gray-300 btn border-none"></button>
                     </div>
                   </>
                 ) : (

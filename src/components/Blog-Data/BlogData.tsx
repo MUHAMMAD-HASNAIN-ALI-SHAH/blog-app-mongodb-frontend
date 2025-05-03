@@ -28,7 +28,7 @@ const blog = () => {
   useEffect(() => {
     if (!blogId || hasViewedRef.current) return;
   
-    hasViewedRef.current = true; // prevent future executions
+    hasViewedRef.current = true;
   
     const fetchData = async () => {
       useHomeBlogStore.getState().clearStateBlogData();
@@ -85,7 +85,7 @@ const blog = () => {
             <img
               src={blog.image}
               alt="Blog Image"
-              className="h-[300px] w-full object-cover rounded-lg"
+              className="h-[170px] sm:h-[250px] md:h-[300px] w-full object-cover rounded-lg"
             />
             <h1 className="text-2xl font-bold text-start">{blog.title}</h1>
             <p className="text-sm w-full text-justify md:text-lg">

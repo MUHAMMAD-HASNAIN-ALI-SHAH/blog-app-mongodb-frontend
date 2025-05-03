@@ -21,7 +21,7 @@ const BlogCard = ({
         <img
           src={blog.image}
           alt={blog.title}
-          className="w-full h-full object-cover rounded-t-xl"
+          className="w-full h-full rounded-t-xl md:object-cover"
         />
       </figure>
 
