@@ -6,7 +6,7 @@ import { useNavigate } from "react-router-dom";
 const SearchBlogs = ({ onClose }: { onClose: () => void }) => {
   const [formData, setFormData] = useState({ search: "" });
   const [blogs, setBlogs] = useState<
-    { id: number; title: string; description: string; image: string }[]
+    { _id: number; title: string; description: string; image: string }[]
   >([]);
   const [debounceTimer, setDebounceTimer] = useState<NodeJS.Timeout | null>(
     null
@@ -83,8 +83,8 @@ const SearchBlogs = ({ onClose }: { onClose: () => void }) => {
         <ul className="mt-4 flex flex-col gap-2">
           {blogs.map((blog) => (
             <li
-              key={blog.id}
-              onClick={() => handleBlogClick(blog.id)}
+              key={blog._id}
+              onClick={() => handleBlogClick(blog._id)}
               className="flex gap-2 cursor-pointer p-2 hover:shadow-2xl rounded-lg transition-transform duration-200 transform hover:scale-105"
             >
               <div className="w-1/3">
