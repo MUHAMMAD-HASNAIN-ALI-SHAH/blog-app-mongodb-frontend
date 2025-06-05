@@ -6,7 +6,7 @@ import { useNavigate } from "react-router-dom";
 const SearchBlogs = ({ onClose }: { onClose: () => void }) => {
   const [formData, setFormData] = useState({ search: "" });
   const [blogs, setBlogs] = useState<
-    { _id: number; title: string; description: string; image: string }[]
+    { _id: string; title: string; description: string; image: string }[]
   >([]);
   const [debounceTimer, setDebounceTimer] = useState<NodeJS.Timeout | null>(
     null
@@ -50,7 +50,7 @@ const SearchBlogs = ({ onClose }: { onClose: () => void }) => {
     }
   };
 
-  const handleBlogClick = (id: number) => {
+  const handleBlogClick = (id: string) => {
     navigate(`/blog/${id}`);
     onClose();
   };
