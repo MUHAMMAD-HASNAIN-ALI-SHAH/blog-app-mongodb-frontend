@@ -4,12 +4,12 @@ import useBlogStore from "../../store/blog";
 import useHomeBlogStore from "../../store/home";
 
 interface CommentsProps {
-  id: number;
+  _id: string;
   onClose: () => void;
-  blogId: number;
+  blogId: string;
 }
 
-const AddComment = ({ id,onClose,blogId }: CommentsProps) => {
+const AddComment = ({ _id,onClose,blogId }: CommentsProps) => {
   const { addComment,commentLoadingState } = useBlogStore();
   const { getBlogData } = useHomeBlogStore();
 
@@ -29,7 +29,7 @@ const AddComment = ({ id,onClose,blogId }: CommentsProps) => {
     const data = {
       comment: values.comment,
     };
-    await addComment(data,id);
+    await addComment(data,_id);
     onClose();
     await getBlogData(blogId);
   };

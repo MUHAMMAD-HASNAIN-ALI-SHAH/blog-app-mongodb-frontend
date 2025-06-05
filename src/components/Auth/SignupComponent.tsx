@@ -1,8 +1,6 @@
 import { useForm } from "@mantine/form";
 import { PasswordInput, TextInput } from "@mantine/core";
 import useAuthStore from "../../store/auth";
-import { useEffect } from "react";
-import Code from "./Code";
 
 const SignupComponent = ({
   close,
@@ -11,12 +9,7 @@ const SignupComponent = ({
   close: () => void;
   setAuthModal: (state: string) => void;
 }) => {
-  const {
-    signup,
-    authLoader,
-    registerCodeValues,
-    clearRegisterCodeValueState,
-  } = useAuthStore();
+  const { authLoader, register } = useAuthStore();
 
   const form = useForm({
     initialValues: {
@@ -27,31 +20,24 @@ const SignupComponent = ({
     },
     validate: {
       username: (value) =>
-        value.length < 3 || value.length >50
+        value.length < 3 || value.length > 50
           ? "Username must be between 3 and 50 characters"
           : null,
       email: (value) => (/^\S+@\S+\.\S+$/.test(value) ? null : "Invalid email"),
       password: (value) =>
         value.length < 6 ? "Password must be at least 6 characters" : null,
       confirmPassword: (value, values) =>
-        value !== values.password
-          ? "Passwords do not match"
-          : null,
+        value !== values.password ? "Passwords do not match" : null,
     },
   });
 
   const handleSubmit = async () => {
     const values = form.values;
-    await signup(values);
+    await register(values); // Direct register
+    close(); // Optionally close the modal on success
   };
 
-  useEffect(() => {
-    clearRegisterCodeValueState();
-  }, []);
-
-  return registerCodeValues.codeSent ? (
-    <Code onClose={close} />
-  ) : (
+  return (
     <form className="w-full" onSubmit={form.onSubmit(handleSubmit)}>
       <h1 className="text-2xl font-bold pb-2">Signup to create an account</h1>
       <p className="">Please enter your details</p>
@@ -59,6 +45,7 @@ const SignupComponent = ({
       <TextInput
         mt="sm"
         label="Username"
+        name="username"
         placeholder="Username"
         key={form.key("username")}
         {...form.getInputProps("username")}
@@ -67,6 +54,7 @@ const SignupComponent = ({
       <TextInput
         mt="sm"
         label="Email"
+        name="email"
         placeholder="Email"
         key={form.key("email")}
         {...form.getInputProps("email")}
@@ -94,11 +82,12 @@ const SignupComponent = ({
         <p className="pt-3">
           Already have an account{" "}
           <button
+            type="button"
             onClick={() => setAuthModal("signin")}
             className="text-blue-700"
           >
             Signin
-          </button>{" "}
+          </button>
         </p>
 
         <button

@@ -32,8 +32,7 @@ const AddBlog = ({ onClose }: { onClose: any }) => {
           ? null
           : "Description must be at least 10 characters",
       base64Image: (value) => (value ? null : "Image is required"),
-      category: (value) =>
-        value.length > 0 ? null : "Category is required",
+      category: (value) => (value.length > 0 ? null : "Category is required"),
     },
   });
 
@@ -62,7 +61,6 @@ const AddBlog = ({ onClose }: { onClose: any }) => {
     base64Image: string;
   }) => {
     const data = {
-      id: null,
       title: values.title,
       description: values.description,
       category: values.category,

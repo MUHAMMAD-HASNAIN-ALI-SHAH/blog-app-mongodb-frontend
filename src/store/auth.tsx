@@ -4,7 +4,7 @@ import toast from "react-hot-toast";
 import useBlogStore from "./blog";
 
 interface User {
-  id: number;
+  _id?: string;
   username: string;
   email: string;
 }
@@ -12,56 +12,19 @@ interface User {
 interface AuthState {
   user: User | null;
   isAuthenticated: boolean;
-  registerCodeValues: {
-    codeSent: boolean;
-    email: string;
-  };
   isAuthenticatedLoading: boolean;
   authLoader: boolean;
-  signup: (formData: {
-    username: string;
-    email: string;
-    password: string;
-  }) => Promise<number>;
   signin: (formData: { email: string; password: string }) => Promise<number>;
-  register: (formData: { email: string; code: number }) => Promise<number>;
+  register: (formData: { username:String; email: string; password: string }) => Promise<number>;
   verify: () => void;
   logout: () => void;
-  clearRegisterCodeValueState: () => void;
 }
 
 const useAuthStore = create<AuthState>((set) => ({
   user: null,
   isAuthenticated: false,
-  registerCodeValues: {
-    codeSent: false,
-    email: "",
-  },
   isAuthenticatedLoading: false,
   authLoader: false,
-
-  signup: async (formData) => {
-    try {
-      useBlogStore.getState().clearState();
-      set({ authLoader: true });
-      const response = await axiosInstance.post("/v1/auth/get-code", formData);
-      toast.success(response.data.msg, { duration: 3000 });
-      set({
-        registerCodeValues: {
-          codeSent: true,
-          email: response.data.user.email,
-        },
-      });
-      set({ authLoader: false });
-      return 1;
-    } catch (error: any) {
-      toast.error(error?.response?.data?.msg || "Signup failed", {
-        duration: 3000,
-      });
-      set({ authLoader: false });
-      return 0;
-    }
-  },
 
   register: async (formData) => {
     try {
@@ -129,8 +92,6 @@ const useAuthStore = create<AuthState>((set) => ({
       set({ user: null, isAuthenticated: false });
     }
   },
-  clearRegisterCodeValueState: () =>
-    set({ registerCodeValues: { codeSent: false, email: "" } }),
 }));
 
 export default useAuthStore;

@@ -13,7 +13,7 @@ import toast from "react-hot-toast";
 import useBlogStore from "../../store/blog";
 import axiosInstance from "../../utils/axios";
 
-const EditBlog = ({ id, onClose }: { id: number | null; onClose: any }) => {
+const EditBlog = ({ _id, onClose }: { _id: string; onClose: any }) => {
   const [preview, setPreview] = useState<string | null>(null);
   const { updateBlog, submitionState, getBlogs } = useBlogStore();
 
@@ -34,27 +34,27 @@ const EditBlog = ({ id, onClose }: { id: number | null; onClose: any }) => {
           ? null
           : "Description must be at least 10 characters",
       base64Image: (value) => (value ? null : "Image is required"),
-      category: (value) =>
-        value.length > 0 ? null : "Category is required",
+      category: (value) => (value.length > 0 ? null : "Category is required"),
     },
   });
 
   useEffect(() => {
     const getBlogs = async () => {
       try {
-        const response = await axiosInstance.get(`/v2/blog/blog/${id}`);
+        const response = await axiosInstance.get(`/v2/blog/blog/${_id}`);
         form.setFieldValue("title", response.data.blogData.title);
         form.setFieldValue("description", response.data.blogData.description);
-        form.setFieldValue("category", response.data.blogData.category); // Add this line
+        form.setFieldValue("category", response.data.blogData.category);
         form.setFieldValue("base64Image", response.data.blogData.image);
         setPreview(response.data.blogData.image);
+        console.log(response.data.blogData);
       } catch (error) {
         toast.error("Failed to fetch blog", { duration: 3000 });
         console.error(error);
       }
     };
     getBlogs();
-  }, [id]);
+  }, [_id]);
 
   // Convert image to Base64
   const handleImageChange = (file: File | null) => {
@@ -81,7 +81,7 @@ const EditBlog = ({ id, onClose }: { id: number | null; onClose: any }) => {
     base64Image: string;
   }) => {
     const data = {
-      id,
+      _id,
       title: values.title,
       description: values.description,
       category: values.category,
@@ -111,8 +111,13 @@ const EditBlog = ({ id, onClose }: { id: number | null; onClose: any }) => {
         {...form.getInputProps("description")}
       />
 
-      <p className="mt-5 text-sm"><span className="font-bold">NOTE: </span>Previous selected category <span className="font-bold">"{form.getValues().category}"</span></p>
-      <p className="text-sm mb-2">Select category again if you want to change</p>
+      <p className="mt-5 text-sm">
+        <span className="font-bold">NOTE: </span>Previous selected category{" "}
+        <span className="font-bold">"{form.getValues().category}"</span>
+      </p>
+      <p className="text-sm mb-2">
+        Select category again if you want to change
+      </p>
 
       <Select
         label="Select blog category"

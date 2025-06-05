@@ -8,7 +8,7 @@ const CategoryBlogs = ({
 }: {
   category: string;
   blogs: {
-    id: number | null;
+    _id: string;
     title: string;
     description: string;
     category: string;
@@ -40,7 +40,7 @@ const CategoryBlogs = ({
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
           {blogs.map((blog) => (
             <div
-              key={blog.id}
+              key={blog._id}
               className="card bg-base-100 w-full border border-base-200 rounded-2xl shadow-lg indicator"
             >
               <span className="indicator-item badge badge-secondary">

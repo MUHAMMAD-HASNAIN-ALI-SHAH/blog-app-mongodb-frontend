@@ -10,7 +10,7 @@ import BlogDataSkeleton from "../skeleton/BlogDataSkeleton";
 
 const blog = () => {
   const { id } = useParams();
-  const blogId = id ? parseInt(id, 10) : null;
+  const blogId = id;
   const { like } = useBlogStore();
   const [liked, setLiked] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
@@ -19,7 +19,7 @@ const blog = () => {
   const { getBlogData, blog, viewBlog } = useHomeBlogStore();
   const { isAuthenticated } = useAuthStore();
 
-  if (blogId === null || isNaN(blogId)) {
+  if (blogId === null) {
     return <p>Error: Invalid blog ID</p>;
   }
 
@@ -27,18 +27,18 @@ const blog = () => {
 
   useEffect(() => {
     if (!blogId || hasViewedRef.current) return;
-  
+
     hasViewedRef.current = true;
-  
+
     const fetchData = async () => {
       useHomeBlogStore.getState().clearStateBlogData();
       await viewBlog(blogId);
       await getBlogData(blogId);
     };
-  
+
     fetchData();
+
   }, [blogId]);
-  
 
   const fetchLikeStatus = async () => {
     try {
@@ -59,7 +59,7 @@ const blog = () => {
     fetchLikeStatus();
   }, [id, isAuthenticated]);
 
-  const LikeBlog = async (blogId: number | null) => {
+  const LikeBlog = async (blogId: string | null) => {
     if (!blogId) return;
     if (!isAuthenticated) {
       toast.error("Please login to like a blog", { duration: 3000 });
@@ -96,7 +96,7 @@ const blog = () => {
                 !likeSatusFailed ? (
                   <>
                     <button
-                      onClick={() => LikeBlog(blog.id)}
+                      onClick={() => LikeBlog(blog._id)}
                       disabled={loading}
                       className={`ri-heart-3-${
                         liked ? "fill" : "line"
@@ -112,11 +112,7 @@ const blog = () => {
                 <span className="loading loading-spinner loading-xl"></span>
               )}
             </div>
-            <Comments
-              id={blogId}
-              blogId={blogId}
-              comments={blog.comments || []}
-            />
+            <Comments blogId={blogId!} comments={blog.comments || []} />
           </>
         ) : (
           <BlogDataSkeleton />

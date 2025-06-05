@@ -3,7 +3,7 @@ import axiosInstance from "../utils/axios";
 import toast from "react-hot-toast";
 
 interface blog {
-  id: number | null;
+  _id?: string;
   title: string;
   description: string;
   category: string;
@@ -21,10 +21,10 @@ interface BlogStore {
   comments: number;
   addBlog: (blog: blog) => void;
   getBlogs: () => void;
-  deleteBlog: (id: number) => void;
+  deleteBlog: (_id: string) => void;
   updateBlog: (blog: blog) => void;
-  addComment: (data: { comment: string }, id: number) => void;
-  like: (id: number) => void;
+  addComment: (data: { comment: string }, _id: string) => void;
+  like: (_id: string) => void;
   getLikes: () => void;
   getComments: () => void;
   clearState: () => void;

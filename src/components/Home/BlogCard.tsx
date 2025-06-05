@@ -4,7 +4,7 @@ const BlogCard = ({
   blog,
 }: {
   blog: {
-    id: number | null;
+    _id: string;
     title: string;
     description: string;
     category: string;
@@ -12,8 +12,8 @@ const BlogCard = ({
   };
 }) => {
   const navigate = useNavigate();
-  const openDetails = (id: number) => {
-    navigate(`/blog/${id}`);
+  const openDetails = (_id: string) => {
+    navigate(`/blog/${_id}`);
   };
   return (
     <>
@@ -36,7 +36,7 @@ const BlogCard = ({
 
         <div className="card-actions justify-end mt-2">
           <button
-            onClick={() => blog.id !== null && openDetails(blog.id)}
+            onClick={() => blog._id !== null && openDetails(blog._id)}
             className="btn btn-error btn-sm"
           >
             Show Blog

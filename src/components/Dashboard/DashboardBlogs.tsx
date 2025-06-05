@@ -5,23 +5,18 @@ import { useState } from "react";
 import EditBlog from "./EditBlog";
 
 const DashboardBlogs = () => {
-  const {
-    blogs,
-    deleteBlog,
-    getBlogs,
-    deleteState,
-  } = useBlogStore();
+  const { blogs, deleteBlog, getBlogs, deleteState } = useBlogStore();
   const [opened, { open, close }] = useDisclosure(false);
-  const [selectedBlogId, setSelectedBlogId] = useState<number | null>(null);
+  const [selectedBlogId, setSelectedBlogId] = useState<string | null>(null);
 
-  const handleEdit = (id: number | null) => {
+  const handleEdit = (id: string) => {
     close();
     setSelectedBlogId(id);
     open();
   };
 
-  const deleteBlogFunction = async (id: number) => {
-    await deleteBlog(id);
+  const deleteBlogFunction = async (_id: string) => {
+    await deleteBlog(_id);
     await getBlogs();
   };
 
@@ -31,7 +26,7 @@ const DashboardBlogs = () => {
 
       <Modal opened={opened} onClose={close} title="Edit Blog" centered>
         {selectedBlogId !== null && (
-          <EditBlog id={selectedBlogId} onClose={close} />
+          <EditBlog _id={selectedBlogId} onClose={close} />
         )}
       </Modal>
 
@@ -39,7 +34,7 @@ const DashboardBlogs = () => {
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
           {blogs.map((blog) => (
             <div
-              key={blog.id}
+              key={blog._id}
               className="card bg-base-100 w-full border border-base-200 rounded-xl shadow-2xl"
             >
               {/* Image */}
@@ -66,20 +61,20 @@ const DashboardBlogs = () => {
 
                 <div className="card-actions justify-end mt-2">
                   <Button
-                    onClick={() => handleEdit(blog.id)}
+                    onClick={() => handleEdit(blog._id!)}
                     className="btn btn-warning btn-sm"
                   >
                     Edit
                   </Button>
-                  <button
+                  <Button
                     onClick={() =>
-                      blog.id !== null && deleteBlogFunction(blog.id)
+                      blog._id !== null && deleteBlogFunction(blog._id!)
                     }
-                    className="btn btn-error btn-sm"
+                    className="bg-red-500 hover:bg-red-600"
                     disabled={!!deleteState}
                   >
                     Delete
-                  </button>
+                  </Button>
                 </div>
               </div>
             </div>

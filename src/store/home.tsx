@@ -2,7 +2,7 @@ import { create } from "zustand";
 import axiosInstance from "../utils/axios";
 
 interface blog {
-  id: number | null;
+  _id: string | null;
   title: string;
   description: string;
   category: string;
@@ -11,22 +11,22 @@ interface blog {
 }
 
 interface blogData {
-  id: number | null;
+  _id: string | null;
   title: string;
   description: string;
   image: string;
   views: number;
   category: string;
   likes: {
-    blogID: number;
-    userID: number;
+    blogId: string;
+    userId: string;
   }[];
   comments: {
-    id: number;
+    _id: string;
     username: string;
     comment: string;
-    blogID: number;
-    userID: number;
+    blogId: string;
+    userId: string;
   }[];
 }
 
@@ -37,10 +37,10 @@ interface BlogStore {
   loadingStateBlogs: boolean;
   getPopularBlogLoader: boolean;
   getBlogs: () => void;
-  getBlogData: (id: number | null) => void;
+  getBlogData: (_id: string | null) => void;
   clearStateBlogData: () => void;
   categoryBlogs: (category: string) => Promise<blog[]>;
-  viewBlog: (id: number) => void;
+  viewBlog: (_id: string) => void;
   getPopularBlogs: () => void;
 }
 

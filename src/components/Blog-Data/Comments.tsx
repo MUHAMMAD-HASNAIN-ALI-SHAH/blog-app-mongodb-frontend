@@ -4,18 +4,17 @@ import AddComment from "./AddComment";
 import useAuthStore from "../../store/auth";
 
 interface CommentsProps {
-  id: number;
   comments: {
-    id: number;
+    _id: string;
     username: string;
     comment: string;
-    blogID: number;
-    userID: number;
+    blogId: string;
+    userId: string;
   }[];
-  blogId: number;
+  blogId: string;
 }
 
-const Comments = ({ id, comments, blogId }: CommentsProps) => {
+const Comments = ({ comments, blogId }: CommentsProps) => {
   const [opened, { open, close }] = useDisclosure(false);
   const { isAuthenticated } = useAuthStore();
 
@@ -25,7 +24,7 @@ const Comments = ({ id, comments, blogId }: CommentsProps) => {
       {comments &&
         comments.map((comment) => (
           <div
-            key={comment.id}
+            key={comment._id}
             className="flex flex-col gap-1 p-2 rounded-lg border border-gray-400"
           >
             <h1 className="text-sm font-semibold">{comment.username}</h1>
@@ -33,7 +32,7 @@ const Comments = ({ id, comments, blogId }: CommentsProps) => {
           </div>
         ))}
       <Modal opened={opened} onClose={close} title="Add Comment" centered>
-        <AddComment blogId={blogId} onClose={close} id={id} />
+        <AddComment blogId={blogId} onClose={close} _id={blogId} />
       </Modal>
       <Button
         onClick={open}
