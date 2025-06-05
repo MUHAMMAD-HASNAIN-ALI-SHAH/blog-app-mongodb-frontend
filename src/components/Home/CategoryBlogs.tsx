@@ -8,7 +8,7 @@ const CategoryBlogs = ({
 }: {
   category: string;
   blogs: {
-    _id: string;
+    _id: string | null;
     title: string;
     description: string;
     category: string;

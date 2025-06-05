@@ -4,7 +4,7 @@ const BlogCard = ({
   blog,
 }: {
   blog: {
-    _id: string;
+    _id: string | null;
     title: string;
     description: string;
     category: string;
